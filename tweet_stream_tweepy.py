@@ -1,13 +1,10 @@
 
-
-
 # Vamos a crear un flujo de Tweets (stream) con la librería tweepy, y lo enviaremos
 # mediante un socket (un canal interno). Al cual nos conectaremos desde Spark para
 # analizar los tweets. Esto script ejecuta la primera parte, crea al Stream y lo transmite.
 
-## Librerías de tweepy
-from tweepy import OAuthHandler
-from tweepy import Stream
+# Librerías de tweepy
+import tweepy
 from tweepy.streaming import StreamListener
 
 ## Librerías generales
@@ -16,7 +13,7 @@ import socket
 
 # Claves de acceso a la API de Twitter. Yo lo he hecho de forma que estén en un archivo "secret.py" aparte.
 import secret
-from secret import consumer_key, consumer_secret, access_token, access_secret
+from secret import consumer_key, consumer_secret, access_token, access_token_secret
 
 # Creamos una clase para usarla posteriormente. Se basa en el uso de un objeto
 # StreamListener de tweepy.
@@ -56,17 +53,22 @@ class TweetsListener(StreamListener):
         print(status)
         return True
 
+# Creamos una función de autenticación.
+def get_auth():
+
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    return auth
+
 # De vuelta en el script, fuera de la casle, creamos una función para inicial el Stream
 # usando la API de Twitter y la clase creada.
 def sendData(c_socket):
 
-    # Protocolo de autenticación
-    auth = OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_secret)
+    auth = get_auth()
 
     # Iniciamos la escucha de Tweets usando TweetsListener, y definiendo el socket a utilizar
     # dentro de la propia clase.
-    twitter_stream = Stream(auth, TweetsListener(c_socket))
+    twitter_stream = tweepy.Stream(auth, TweetsListener(c_socket))
 
     # Filtramos los tweets por una palabra clave.
     twitter_stream.filter(track=['trump'])
@@ -93,5 +95,3 @@ if __name__ == "__main__":
 
     # Dado que hay conexión, iniciamos la transferencia por el socket.
     sendData(c)
-
-    return True
