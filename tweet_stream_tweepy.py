@@ -37,7 +37,7 @@ class TweetsListener(StreamListener):
 
             msg = json.loads(data)
             print(msg['text'])
-            self.client_socket.send(msg['text'].encode('utf-8'))
+            self.client_socket.send(msg)
 
             return True
 
