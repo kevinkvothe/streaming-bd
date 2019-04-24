@@ -1,109 +1,50 @@
 -------------------------------------------
-Time: 2019-04-24 20:33:49
+Time: 2019-04-24 22:27:19
 -------------------------------------------
 
 -------------------------------------------
-Time: 2019-04-24 20:33:51
+Time: 2019-04-24 22:27:36
 -------------------------------------------
-('“We’re fighting all the subpoenas ... The only way they can luck out is by constantly going after me on nonsense,”… https://t.co/YnlNZez7Zp', 'None', [])
-('RT @Rey_Sistance: “I don’t remember, I don’t recall \nI got no memory of anything at all ...”\n\nNo it’s not Peter Gabriel, it’s trump on all…', 'None', [])
-('@realDonaldTrump', 'None', [])
-('RT @KAG_CAMP: https://t.co/1IlBtdoPxl', 'None', [])
-('RT @brianschatz: No one knows who is electable. The census is for counting all people in America. The VA should not be privatized. Expandin…', 'None', [])
-('RT @davidcicilline: Yeah, but the fact is they didn’t spy on him. They conducted an investigation subsequent to receiving a duly authorized…', 'None', [])
-('RT @GovBillWeld: "Republicans in Washington have become the silence of the lambs when it comes to Trump,” Weld said. “Hopefully we can show…', 'None', [])
-('RT @SpicyFiIesredux: You need to trigger him.\nCall in to question his lack of punishing Russia for attacking our elections.\nZero election s…', 'None', [])
-('RT @ddale8: Trump’s last two weeks as of Sunday: 55 total false claims, better than his average. The list includes an imaginary Caterpillar…', 'None', [])
-("RT @jax_persists: Y'all be careful when you tweet at Trump now. People are getting suspended/thrown in Twitmo just for calling him a whiny…", 'None', [])
+Tweet_tuple(texto='RT @ManInTheHoody: @sarahkendzior @gaslitnation u know what we should do? instead of doing impeachment when a big dick toilet salesman is a…', hashtag=[], retweeted=False)
+Tweet_tuple(texto='@rudepundit I keep repeating this, but Trump would most assuredly be more humiliated by being a one-term President… https://t.co/wqznj9VpS1', hashtag=[], retweeted=False)
+Tweet_tuple(texto='For Gods Sake read the Constitution about the separation of powers. The SCOTUS has No Say. No Way Jose’ You’re F**k… https://t.co/FZgbqynxvE', hashtag=[], retweeted=False)
+Tweet_tuple(texto="RT @KevinMKruse: You're claiming credit for the Veterans Choice and Accountability Act of ... 2014? https://t.co/xfkSpJ8dRm", hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @williamnhutton: Today’s British kow-towing to the Chinese government over Huawei as 8 Hong Kong democracy protesters are imprisoned for…', hashtag=[], retweeted=False)
+Tweet_tuple(texto='@WhiteHouse No matter what the Mueller Report does or does not say, trump is still a friend to brutal dictators who… https://t.co/sOIfHD1hC7', hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @KathyTa57912064: You become the swamp after you have been there awhile....  Term limits! https://t.co/AKjJ790EzB', hashtag=[], retweeted=False)
+Tweet_tuple(texto="RT @jax_persists: I already walked away from the GOP and I've never felt so free. Fuck Trump. Let me know when y'all stop cheering a man wh…", hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @LisPower1: Fox host accidentally admits that Russian interference cost Democrats the election. (I really hope Trump was watching.) \n\nFR…', hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @selectedwisdom: Now that the #MuellerReport is out, Anyone heard from the Trump administration what they will do to prevent a foreign i…', hashtag=['MuellerReport'], retweeted=False)
 ...
 
 -------------------------------------------
-Time: 2019-04-24 20:33:54
+Time: 2019-04-24 22:27:38
 -------------------------------------------
-('RT @young2813: @SethAbramson Comparing Clinton impeachment to a Trump impeachment is insane.  Clinton lied about a blow job!  There is not…', 'None', [])
-('President Trump and The First Lady Deliver Remarks at the Rx Drug Abuse &amp; Heroin Summit https://t.co/qDThdRWGyM via @whitehouse', 'None', [])
-('RT @adriandt31: Boom!\nTrump Accuses UK of Helping Obama Admin Spy on His Campaign\n\nThese crooks were willing to risk WWW III with Russia ra…', 'None', [])
-('RT @politvidchannel: BREAKING: Judiciary Chairman Jerry Nadler is Thinking About fining Trump officials personally if they deny or ignore s…', 'None', [])
-('RT @ManInTheHoody: how many followers would trump have to lose on twitter for him to declare a national emergency and deploy the national g…', 'None', [])
-('RT @ProLifeTexanUSA: Yet another #Democrat loser enters 2020 race already sewn up by President Trump. Creepy Joe and his hands stand 0% cha…', 'None', ['Democrat'])
-('RT @TheOnion: Reports that President Trump was considering a plan to release detained undocumented immigrants in the nation’s sanctuary cit…', 'None', [])
-('RT @ABC: WATCH: Pres. Trump, first lady Melania Trump speak at drug abuse and heroin summit in Atlanta, GA. https://t.co/LyB6NXmd4q', 'None', [])
-('RT @HillaryClinton: This is despicable. The Trump administration is not only ceding America’s role as a leader on the human rights of women…', 'None', [])
-('@realDonaldTrump Not a glove at all.  It did lay out your impeachable and fellonious conduct you lying crook.  Lock… https://t.co/YahDCSDPMQ', 'None', [])
+Tweet_tuple(texto='RT @EricHolder: Focus on this.  The future of the nation is at stake.  This is a big. https://t.co/Bc8Xj0lfEe', hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @brycetache: I will only be tweeting about the necessity of impeachment. That’s it. Because nothing else is as important. We have to con…', hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @RepMaxineWaters: I received some criticism b/c I said Repubs supporting Trump -after his crimes &amp; work w/ Russians - are unpatriotic. Y…', hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @EpochTimes: Additional troops sent to the US-Mexico #Border will be armed, President Trump said after 2 US soldiers were held at gunpoi…', hashtag=['Border'], retweeted=False)
+Tweet_tuple(texto='@TeamCavuto did you seriously just compare Hillary’s crimes to @POTUS fake Russian hoax? Of course the Republicans… https://t.co/dZSWySj8TG', hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @B52Malmet: Donald’s threat to go to his stacked SCOTUS if Congress begins impeachment is specious. He probably doesn’t know what that m…', hashtag=[], retweeted=False)
+Tweet_tuple(texto="#SheThePeople2020 what's the government role to fight white nationalism Bernie? Get trump out of office to help the… https://t.co/8V3GjrdaFL", hashtag=['SheThePeople2020'], retweeted=False)
+Tweet_tuple(texto='RT @MAGAindex: WINNING: The stock market closed at new record highs. Unemployment is at record lows.\n\nPresident Trump’s booming economy is…', hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @New2018World: Yes!!\n\nObama was the best president of my lifetime. \n\nTrump is absolutely the worst one. \n\n #ImpeachDonaldTrump \n\nhttps:/…', hashtag=['ImpeachDonaldTrump'], retweeted=False)
+Tweet_tuple(texto='RT @TheRickWilson: Democrats have a narrow window in which to demonstrate seriousness over the subpoena question. \n\nTrump is calling their…', hashtag=[], retweeted=False)
 ...
 
 -------------------------------------------
-Time: 2019-04-24 20:33:56
+Time: 2019-04-24 22:27:39
 -------------------------------------------
-("RT @dccc: WHOA: The GOP's top brass in Texas just admitted that even statewide races will prove challenging in 2020. Our aggressive push in…", 'None', [])
-("RT @splcenter: We're suing the Trump administration for forcing asylum seekers to wait in Mexico while their cases are considered. People f…", 'None', [])
-('RT @JoyceWhiteVance: Among my lingering questions from the Mueller Report: Is there any investigation into Trump’s effort to obstruct SDNY…', 'None', [])
-('RT @OhioCelina: Should criminals in prison be allowed to vote? #MAGA #Trump #BernieSanders #2020Election #USA #vote #VotingRights #prison #…', 'None', ['MAGA', 'Trump', 'BernieSanders', '2020Election', 'USA', 'vote', 'VotingRights', 'prison'])
-("RT @RyanAFournier: Hillary claims President Trump would be indicted if he wasn't in office. \n\nThis is the same woman who:\n\n* Smashed mobile…", 'None', [])
-('RT @TheRickWilson: Democrats have a narrow window in which to demonstrate seriousness over the subpoena question. \n\nTrump is calling their…', 'None', [])
-('RT @glennkirschner2: The Mueller report shows that even Trump recognized the consequences of his own misconduct, “Oh my god, this is terrib…', 'None', [])
-('RT @MerrittForGA: I’m a republican candidate running in Georgia\n\nI’m a fervent Trump supporter and plan on supporting our president once in…', 'None', [])
-('@POTUS is afraid.', 'None', [])
-('@realKyleOlbert @Zippittt @POTUS @RoyalFamily @theresa_may You are about to get a full cup of "Tea". Trump Tea! He… https://t.co/23x0YkORXp', 'None', [])
+Tweet_tuple(texto='RT @brycetache: I will only be tweeting about the necessity of impeachment. That’s it. Because nothing else is as important. We have to con…', hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @zdholden: @realDonaldTrump CNN lied.\n\nMSNBC lied.\n\nNBC lied.\n\nABC lied.\n\nCBS lied. \n\nNew York Times lied.\n\nThe Washington Post lied.\n\nT…', hashtag=[], retweeted=False)
+Tweet_tuple(texto="RT @atrupar: It's an interesting coincidence that Trump is promoting Mike Lee's book hours after Lee went on CNN and contorted himself into…", hashtag=[], retweeted=False)
+Tweet_tuple(texto="RT @RealMattCouch: BREAKING: Mitt Romney considering Republican Presidential Run in 2020 facing Trump in Primaries.. \n\nIt's going to be an…", hashtag=[], retweeted=False)
+Tweet_tuple(texto="RT @mmpadellan: President Obama was harassed for 8 yrs by trump, and all he did was make us PROUD to be American.\n\nHe didn't tweet insults.…", hashtag=[], retweeted=False)
+Tweet_tuple(texto='@marcorubio @realDonaldTrump So you have become fullstop the puppet to the puppet of the puppet? Not that you haven… https://t.co/uPUEjG1LQ7', hashtag=[], retweeted=False)
+Tweet_tuple(texto='SO EXCITED! SO WHEN IS @KellyannePolls HIRING YOU? COME ON! CALL HER OFFICE!!! Hugs from your favorite Easter Worsh… https://t.co/cGQtYu9l7f', hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @SethAbramson: Everywhere in the country, people go to jail for Direct Contempt. If Nadler or any Democratic committee chair does anythi…', hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @RepMaxineWaters: I received some criticism b/c I said Repubs supporting Trump -after his crimes &amp; work w/ Russians - are unpatriotic. Y…', hashtag=[], retweeted=False)
+Tweet_tuple(texto='RT @chrisbergPOVNOW: This is the interview @realDonaldTrump tweeted about the #UK this morning...the tables are turning folks. Get ready! #…', hashtag=['UK'], retweeted=False)
 ...
 
--------------------------------------------
-Time: 2019-04-24 20:34:01
--------------------------------------------
-('RT @ProudResister: Right now many Americans don’t know the truth about Trump because they are being gaslighted. They don’t know the Mueller…', 'None', [])
-('Great thread, crushing the complicit GOP leadership...my hope is that people just read the report vs. relying on bi… https://t.co/vOzOporeKH', 'None', [])
-('RT @HillaryClinton: This is despicable. The Trump administration is not only ceding America’s role as a leader on the human rights of women…', 'None', [])
-('RT @JacobHeilbrunn: Trump promotes baseless accusation of British spying a day after accepting an invitation for a state visit from the que…', 'None', [])
-('RT @NCBerniecrat: @thehill Buttigieg has a 25% (1/4) chance of carrying the PV out of the four polls he faced Trump in and Sanders wins the…', 'None', [])
-('RT @paulsperry_: BREAKING: After IG Horowitz forced Mueller to kick politically biased Trump-hater Strzok off his investigative team, Muell…', 'None', [])
-('RT @SaysSimonson: NEW: McCain family expected to back Biden in his White House bid.\n\nmy latest, with @naomitlim, for @dcexaminer:\n\nhttps://…', 'None', [])
-('RT @TulsiGabbard: Trump/Pence continue to try to hide the truth from their Christian supporters--the terrorist attacks on Christians/Christ…', 'None', [])
-("RT @RyanAFournier: Hillary claims President Trump would be indicted if he wasn't in office. \n\nThis is the same woman who:\n\n* Smashed mobile…", 'None', [])
-("RT @PalmerReport: Donald Trump's day so far:\n\n- Accuses Obama of spying on him again\n- Makes up a fake caravan again\n- Threatens to close t…", 'None', [])
-...
-
--------------------------------------------
-Time: 2019-04-24 20:34:02
--------------------------------------------
-('RT @ParisMatch: Ivanka Trump : "Notre objectif\u2009: émanciper 50 millions d’Africaines d’ici à 2025" https://t.co/ggevLhajRf https://t.co/kpOV…', 'None', [])
-('RT @HillaryClinton: This is despicable. The Trump administration is not only ceding America’s role as a leader on the human rights of women…', 'None', [])
-('RT @HillaryClinton: This is despicable. The Trump administration is not only ceding America’s role as a leader on the human rights of women…', 'None', [])
-('RT @RalitoDigital: ¡QUE LO SEPA EL MUNDO!\nEl gobierno de #EEUU nos robo Citgo, la están endeudando por 1.300 millones de dólares con la con…', 'None', ['EEUU'])
-('RT @AshaRangappa_: While we wait for Trump’s tax returns, here’s a little refresher on how he got his wealth (NOTE: his sister stepped down…', 'None', [])
-('RT @SethAbramson: Read that headline a few times https://t.co/4YXUXtDYGa', 'None', [])
-('RT @TomSteyer: No matter your party affiliation, Mr. Trump is dangerous to ALL Americans. It’s important now more than ever that we come to…', 'None', [])
-('RT @HillaryClinton: This is despicable. The Trump administration is not only ceding America’s role as a leader on the human rights of women…', 'None', [])
-('RT @axidentaliberal: Children\n\nIn Guantanamo\n\nTHIS IS WHERE THEY DETAIN TERRORISTS\n\nIs this who we are now\n\nI will continue fighting the cr…', 'None', [])
-('RT @HillaryClinton: This is despicable. The Trump administration is not only ceding America’s role as a leader on the human rights of women…', 'None', [])
-...
-
--------------------------------------------
-Time: 2019-04-24 20:34:05
--------------------------------------------
-('RT @LincolnsBible: Donald Trump is the common denominator in 2 on-going sagas: \n1) Kremlin-connected Russians infiltrating FL via Trump bra…', 'None', [])
-("RT @omz__music: Donald Trump has just broken his own single day tweet record with 51 tweets in the past 24 hours. He's in a full blown mani…", 'None', [])
-('@ElieNYC @atlblog @americanmclass @realDonaldTrump True, Elie. But this is the Trump White House. In congressional… https://t.co/7MPon7PwTW', 'None', [])
-('RT @Mimirocah1: President Trump, constitutional menace - The Washington Post https://t.co/xoOINtFKMZ', 'None', [])
-('RT @maddow: Trump thinks the Supreme Court can save him from impeachment (it can’t).\n\nhttps://t.co/rlXuzIYxBj', 'None', [])
-('RT @maggieNYT: Before Nielsen was forced out, she tried to focus the White House on one of her highest priorities as DHS secretary: prepari…', 'None', [])
-("RT @NeensCa: Would somebody ... anybody ... Explain to me what protesters are protesting????  I don't get it 👇👇👇\n\nHow President Trump's vis…", 'None', [])
-('RT @realDonaldTrump: Rep. Alexandria Ocasio-Cortez is correct, the VA is not broken, it is doing great. But that is only because of the Tru…', 'None', [])
-('Und wes  Geisteskind sind sie und ihr Parteimob,welcher Kinderehen fördert und das Grundgesetz missachtet!', 'None', [])
-('RT @BillKristol: Trump: “We are fighting all the subpoenas.” So Trump intends to abide by none of the norms observed (often grudgingly) by…', 'None', [])
-...
-
--------------------------------------------
-Time: 2019-04-24 20:34:08
--------------------------------------------
-('RT @nowthisnews: ‘This is your Nuremberg moment, your chance to stand on the right side of history.’ —\xa0Amal Clooney called out the Trump ad…', 'None', [])
-("RT @Dewestmusic243: What would happen if a Gov't official or spouse toured the world speaking ill of the President or USA during Obama's ti…", 'None', [])
-('RT @catturd2: Breaking news ... McCain family to support Biden in 2020 race in bid to defeat Trump. \n\nIn other breaking news ... who gives…', 'None', [])
-('RT @SpicyFiIesredux: Dear @HouseDemocrats stop using the DC Playbook.\nTrump doesn’t play by the rules or laws.\nYou are dealing with a vexat…', 'None', [])
-('@APCentralRegion @AP Drill baby drill...leave the wells uncapped maybe they will become drains...lol Climate change… https://t.co/1rHZjgSBFA', 'None', [])
-('RT @VTVcanal8: #EnVideo  📹| Pdte. @NicolasMaduro: El gobierno de EE.UU. ilegalmente se apropió de Citgo y la están endeudando por 1.300 mil…', 'None', ['EnVideo'])
-("RT @effiedog: @dabeard @emj1776 Under Trump's Tax Cuts for the very rich - everyone else's taxes increased to accommodate the very wealthy.…", 'None', [])
-('RT @thedailybeast: MAGA mail bomber Cesar Sayoc compares attending Trump rally to getting hooked on a "fun drug" https://t.co/jZr8GHluGY', 'None', [])
-('RT @realDonaldTrump: “Former CIA analyst Larry Johnson accuses United Kingdom Intelligence of helping Obama Administration Spy on the 2016…', 'None', [])
-("RT @netanyahu: I'm here on the beautiful Golan Heights. All Israelis were deeply moved when President Trump made his historic decision to r…", 'None', [])
-...
-
+256

@@ -47,25 +47,8 @@ class TweetsListener(StreamListener):
 
         try:
 
-            #msg = {"text": "balaslasasada", "geo": None, 'entities': {'hashtags': []}}
-            # len(msg['entities']['hashtags'])
-
-            #alg = Tweet(msg)
-            #alg
-            #send = alg['text'] + "//" + alg['geo'] + "//" + ",".join(alg['hashtags'])
-            #json.dumps(send)
             msg = json.loads(data)
-            #msg = data
-            #senditem = {}
-            #senditem['text'] = msg['text']
-            #senditem['hashtags'] = msg['entities']['hashtags']
-            #senditem['geo'] = msg['geo']
-
-            #msg = json.loads(data)
-            #alg = Tweet(msg)
-            #envio = alg['text'] + "//" + alg['geo'] + "//" + ",".join(alg['hashtags'])
-            #senditem = json.dumps(senditem)
-            print(data)
+            print(msg['entities']['hashtags'])
 
             self.client_socket.send(data.encode())
 
@@ -101,7 +84,7 @@ def sendData(c_socket):
     twitter_stream = tweepy.Stream(auth, TweetsListener(c_socket))
 
     # Filtramos los tweets por una palabra clave.
-    twitter_stream.filter(track=['trump'])
+    twitter_stream.filter(track=['a'])
 
 # Volvemos al script, esta parte se ejecuta independientemente de la clase. Es lo que inicia
 # el socket y espera conexión para continuar con la transmisión.
