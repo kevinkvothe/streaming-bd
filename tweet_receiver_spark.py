@@ -8,6 +8,8 @@ import time
 import matplotlib.pyplot as plt
 import seaborn as sns
 import collections
+import json
+import pprint
 
 # Pyspark
 import findspark
@@ -57,72 +59,58 @@ socket_stream = ssc.socketTextStream("127.0.0.1", 9992)
 # de segundos de la ventana. Usaremos ventanas de 20 segundos cada 20 segundos, de forma
 # que todos los datos que procesemos cada 20 segundos serán independientes (no tendremos
 # batches superpuestos).
-lines = socket_stream.window(20, 20)
+#lines = socket_stream.window(20, 20)
 
+
+lines = socket_stream.map(lambda x: json.loads(x))
+# dstream = lines.map(lambda x: json.loads(x))
+#lines2 = lines.map(lambda x: x['text'])
+lines.pprint()
+lines.map(lambda x: x['text']).pprint()
+
+ssc.start()
+#lines.foreachRDD(lambda rdd: rdd.toDF()).limit(10).registerTempTable("tabla_tweets")
+
+#lines2.pprint()
 # Creamos una tupla con nombre, para poder asignar valores a campos de una tupla y llamarlos.
-valores = ("hashtag", "count")
-Tweet = collections.namedtuple('Tweet', valores)
+#valores = ("hashtag", "count")
+#valores = ("texto", "geo", "hashtag")
+#Tweet = collections.namedtuple('Tweet', valores)
+
+#(lines.flatMap(lambda line: (line['text'].split(" "))).filter(lambda word: word.lower().startswith("#"))
+#.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a + b).map(lambda rec: Tweet(rec[0], rec[1]))
+#.foreachRDD(lambda rdd: rdd.toDF().sort(desc("count")).limit(10).registerTempTable("tabla_tweets")))
 
 # Ahora vamos a transformar nuestro objeto DStream en un dataframe para manipularlo.
 # Spliteamos por espacios.
-(lines
+#(lines
 
 # Dividimos las lineas por espacios, formando palabras.
-.flatMap(lambda line: line.split(" "))
+#.flatMap(lambda line: line.split(" "))
 
 # Filtramos por hashtag en minúsculas.
-.filter(lambda word: word.lower().startswith("#"))
+#.filter(lambda word: word.lower().startswith("#"))
 
 # Mapeamos en forma de tupla con un 1 para contar.
-.map(lambda word: (word, 1))
+#.map(lambda word: (word, 1))
 
 # Reducimos por palabra del hashtag.
-.reduceByKey(lambda a, b: a + b)
+#.reduceByKey(lambda a, b: a + b)
 
 # Transformamos en la tupla nombrada "Tweet".
-.map(lambda rec: Tweet(rec[0], rec[1]))
+#.map(lambda rec: Tweet(rec[0], rec[1]))
 
 # Para cada batch, pasamos el conjunto de tuplas nombradas a dataframes ordenando
 # por orden descendiente de su repetición.
-.foreachRDD(lambda rdd: rdd.toDF().sort(desc("count"))
+#.foreachRDD(lambda rdd: rdd.toDF().sort(desc("count"))
 
 # Limitamos la salida a 15 y creamos una tabla temporal para usar comandos SQL en ella.
-.limit(10).registerTempTable("tabla_tweets")))
+#.limit(10).registerTempTable("tabla_tweets")))
 
 # Iniciamos la conexión y por tanto la gestión de tweets por parte de Spark.
 ssc.start()
 
-# Visualización inicial: Tendencia de hashtags usando como palabra clave "trump" durante 10
-# minutos en intervalos de 2 minutos (5 visualizaciones).
-count = 0
-
-# Damos tiempo a que la computación se realice hasta aquí
-time.sleep(5)
-
-while count < 3:
-
-    # Demos utilizar un periodo de tiempo alrededor de 20 segundos (tamaño y periodo de
-    # actualización de la ventana) para asegurarnos de no estar usando los mismos datos.
-    time.sleep(20)
-
-    # Obtenemos los hashtags y sus apariciones de la tabla creada anteriormente.
-    top_tweets = sqlContext.sql('Select hashtag, count from tabla_tweets')
-
-    # La pasamos a pandas.
-    df = top_tweets.toPandas()
-
-    # Para visualizar, descomponemos en x e y.
-    x = df['hashtag']
-    y = df['count']
-
-    # Creamos el barplot.
-    fig, ax = plt.subplots()
-    ax.bar([idx for idx in range(len(x))], y, color = 'blue')
-    ax.set_xticks([idx+0.5 for idx in range(len(x))])
-    ax.set_xticklabels(x, rotation=35, ha='right', size=10)
-    plt.show()
-
-    count = count + 1
+#top_tweets = sqlContext.sql('Select hashtag, count from tabla_tweets')
 
 ssc.stop()
 

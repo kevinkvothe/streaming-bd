@@ -11,9 +11,20 @@ from tweepy.streaming import StreamListener
 import json
 import socket
 
+
 # Claves de acceso a la API de Twitter. Yo lo he hecho de forma que estén en un archivo "secret.py" aparte.
 import secret
 from secret import consumer_key, consumer_secret, access_token, access_token_secret
+
+class Tweet(dict):
+
+    def __init__(self, tweet_in):
+
+        # super(Tweet, self).__init__(self)
+        self['text'] = tweet_in['text']
+        self['hashtags'] = [x['text'] for x in tweet_in['entities']['hashtags']]
+        self['geo'] = tweet_in['geo']['coordinates'] if tweet_in['geo'] else "None"
+
 
 # Creamos una clase para usarla posteriormente. Se basa en el uso de un objeto
 # StreamListener de tweepy.
@@ -31,13 +42,32 @@ class TweetsListener(StreamListener):
 
     # Creamos una función on_data que intenta transmitir cada tweet (únicamente el texto)
     # A través del socket.
+
     def on_data(self, data):
 
         try:
 
-            msg = json.loads(data)
-            print(msg['text'])
-            self.client_socket.send(msg)
+            #msg = {"text": "balaslasasada", "geo": None, 'entities': {'hashtags': []}}
+            # len(msg['entities']['hashtags'])
+
+            #alg = Tweet(msg)
+            #alg
+            #send = alg['text'] + "//" + alg['geo'] + "//" + ",".join(alg['hashtags'])
+            #json.dumps(send)
+            #msg = json.loads(data)
+
+            #senditem = {}
+            #senditem['text'] = msg['text']
+            #senditem['hashtags'] = msg['entities']['hashtags']
+            #senditem['geo'] = msg['geo']
+
+            #msg = json.loads(data)
+            #alg = Tweet(msg)
+            #envio = alg['text'] + "//" + alg['geo'] + "//" + ",".join(alg['hashtags'])
+            #senditem = json.dumps(senditem)
+            print(data.split('\n'))
+
+            self.client_socket.send(data.encode())
 
             return True
 
