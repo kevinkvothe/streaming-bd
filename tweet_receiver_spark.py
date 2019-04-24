@@ -59,14 +59,26 @@ socket_stream = ssc.socketTextStream("127.0.0.1", 9992)
 # de segundos de la ventana. Usaremos ventanas de 20 segundos cada 20 segundos, de forma
 # que todos los datos que procesemos cada 20 segundos serán independientes (no tendremos
 # batches superpuestos).
-#lines = socket_stream.window(20, 20)
+#socket_stream = socket_stream.window(5, 5)
 
 
 lines = socket_stream.map(lambda x: json.loads(x))
 # dstream = lines.map(lambda x: json.loads(x))
 #lines2 = lines.map(lambda x: x['text'])
-lines.pprint()
-lines.map(lambda x: x['text']).pprint()
+#lines.pprint()
+
+class Tweet(dict):
+
+    def __init__(self, tweet_in):
+
+        self['text'] = tweet_in['text']
+        self['hashtags'] = [x['text'] for x in tweet_in['entities']['hashtags']]
+        self['geo'] = tweet_in['geo']['coordinates'] if tweet_in['geo'] else "None"
+
+tweets = lines.map(lambda x: Tweet(x))
+tweets.map(lambda x: (x['text'], x['geo'], x['hashtags'])).pprint()
+
+#lines.map(lambda x: x['text']).pprint()
 
 ssc.start()
 #lines.foreachRDD(lambda rdd: rdd.toDF()).limit(10).registerTempTable("tabla_tweets")

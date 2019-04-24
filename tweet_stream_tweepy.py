@@ -54,8 +54,8 @@ class TweetsListener(StreamListener):
             #alg
             #send = alg['text'] + "//" + alg['geo'] + "//" + ",".join(alg['hashtags'])
             #json.dumps(send)
-            #msg = json.loads(data)
-
+            msg = json.loads(data)
+            #msg = data
             #senditem = {}
             #senditem['text'] = msg['text']
             #senditem['hashtags'] = msg['entities']['hashtags']
@@ -65,7 +65,7 @@ class TweetsListener(StreamListener):
             #alg = Tweet(msg)
             #envio = alg['text'] + "//" + alg['geo'] + "//" + ",".join(alg['hashtags'])
             #senditem = json.dumps(senditem)
-            print(data.split('\n'))
+            print(data)
 
             self.client_socket.send(data.encode())
 
