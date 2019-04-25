@@ -62,7 +62,7 @@ socket_stream = ssc.socketTextStream("127.0.0.1", 9992)
 # de segundos de la ventana. Usaremos ventanas de 20 segundos cada 20 segundos, de forma
 # que todos los datos que procesemos cada 20 segundos serán independientes (no tendremos
 # batches superpuestos).
-socket_stream = socket_stream.window(20, 20)
+socket_stream = socket_stream.window(15, 15)
 
 # Definimos la clase Tweet para seleccionar lo que deseamos del Stream
 class Tweet(dict):
@@ -87,7 +87,9 @@ tweets = lines.map(lambda x: Tweet(x))
 # ================ Ahora buscamos obtener estadísticas: =================== #
 
 # ====================== Primer análisis: Hashtags =========================#
-## En primer lugar, una estadística de hashtags que utilice la gente que escriba determinadas palabras clave.
+# En primer lugar, una estadística de hashtags que utilice la gente que tweittee sobre cualquiera
+# de los 5 principales candidatos a presidente del gobierno.
+
 # Definimos una tupla nombrada para delimitar los hashtags y su repetición.
 valores_hash = ("hashtag", "count")
 hash_tuple = collections.namedtuple('hash_tuple', valores_hash)
@@ -116,17 +118,23 @@ lines = tweets.map(lambda x: x['text'])
 .foreachRDD(lambda rdd: rdd.toDF().sort(desc("count"))
 
 # Limitamos la salida a 15 y creamos una tabla temporal para usar comandos SQL en ella.
-.limit(10).registerTempTable("tabla_hashtags")))
+.registerTempTable("tabla_hashtags")))
 
 
 # =================== Segundo análisis: popularidad ===================== #
+# Vamos a medir la popularidad de los 5 principales candidatos a presidente de España en las elecciones
+# del 28 de Abril. Lo haremos contando el número de veces que sus nombres son tweitteados en relación
+# al resto.
 
 # Definimos una tupla nombrada para delimitar los hashtags y su repetición.
 valores_pop = ("candidato", "count")
 pop_tuple = collections.namedtuple('pop_tuple', valores_pop)
 
-candidatos_lower = ['trump', 'clinton', 'obama', 'abascal', 'iglesias', 'sanchez', 'rajoy']
+# Definimos los candidatos por los que detectar tweets.
+#candidatos_lower = ['trump', 'clinton', 'obama', 'abascal', 'iglesias', 'sanchez', 'rajoy', 'rivera']
+candidatos_lower = ['abascal', 'iglesias', 'sanchez', 'casado', 'rivera']
 
+# Cremos una función para crear una tabla con las veces que se menciona a cada candidato.
 def calcular_tabla(candidato):
 
     nombre_tabla = "tabla_pop_" + candidato
@@ -137,16 +145,10 @@ def calcular_tabla(candidato):
     # Dividimos las lineas por espacios, formando palabras.
     .flatMap(lambda line: line.replace("#", "").replace("'", "").replace(",", "").replace(".", "").split(" "))
 
-    # Filtramos por hashtag en minúsculas.
-    #.map(lambda word: (unidecode.unidecode(word).lower().startswith("trump"), 1))
+    # Filtramos por palabras clave en minúsculas y sin acentos.
     .map(lambda word: (candidato in unidecode.unidecode(word).lower(), 1))
-    #.filter(lambda word: word.lower().startswith("trump"))
-    #.filter(lambda word: "trump" in word.lower())
 
-    # Mapeamos en forma de tupla con un 1 para contar.
-    #.map(lambda word: (word, 1))
-
-    # Reducimos por palabra del hashtag.
+    # Reducimos por True y False, siendo true y false los valores de palabra detectada y no.
     .reduceByKey(lambda a, b: a + b)
 
     # Transformamos en la tupla nombrada "Tweet".
@@ -156,53 +158,57 @@ def calcular_tabla(candidato):
     # por orden descendiente de su repetición.
     .foreachRDD(lambda rdd: rdd.toDF().sort(desc("count"))
 
-    # Limitamos la salida a 15 y creamos una tabla temporal para usar comandos SQL en ella.
+    # Limitamos la salida a 2 y creamos una tabla temporal para usar comandos SQL en ella.
     .limit(2).registerTempTable(nombre_tabla)))
 
+# Llamadas para crear cada una de las tablas necesarias con cada batch.
 for cand in candidatos_lower:
     calcular_tabla(cand)
 
-#calcular_tabla('trump')
-#calcular_tabla('sanchez')
-#calcular_tabla('clinton')
-
+# Iniciamos el stream.
 ssc.start()
 
+# Introducimos un delay para que se calcule el primer batch y las tablas derivadas.
+time.sleep(22)
 
-# Añadimos los valores de True al dataframe creado anteriormente.
-top_pop = sqlContext.sql('Select candidato, count from tabla_pop_trump')
-tabla_2 = top_pop.toPandas()
-print(tabla_2)
+# Definimos dos dataframes vacíos con los candidatos y sus menciones y otro con los hashtags y su conteo.
+df_can = pd.DataFrame({"candidatos": candidatos_lower, "suma": np.zeros(len(candidatos_lower))})
+df_hashtags_fin = pd.DataFrame({'hashtag': [], 'count': []})
 
+# Rellenamos el dataframe anterior de forma acumulativa en 5 ciclos.
+for a in range(5):
 
-df_can = pd.DataFrame({"candidatos": candidatos_lower, "suma": np.zeros(7)})
+    for i in candidatos_lower:
 
-for i in candidatos_lower:
+        nombre_tabla = "tabla_pop_" + i
 
-    nombre_tabla = "tabla_pop_" + i
+        # Añadimos los valores de True al dataframe creado anteriormente.
+        top_pop = sqlContext.sql('Select candidato, count from ' + nombre_tabla)
+        tabla = top_pop.toPandas()
 
-    # Añadimos los valores de True al dataframe creado anteriormente.
-    top_pop = sqlContext.sql('Select candidato, count from ' + nombre_tabla)
-    tabla = top_pop.toPandas()
+        if tabla.shape[0] > 1:
+            val = tabla.iloc[np.where(tabla['candidato'] == True)[0], 1]
+            val = val[1]
+        else:
+            val = 0
 
-    if tabla.shape[0] > 1:
-        val = tabla.iloc[np.where(tabla['candidato'] == True)[0], 1]
-        val = val[1]
-    else:
-        val = 0
+        df_can.iloc[np.where(df_can['candidatos'] == i)[0], 1] += val
 
-    df_can.iloc[np.where(df_can['candidatos'] == i)[0], 1] += val
-    print(df_can)
+        top_hashtags = sqlContext.sql('Select hashtag, count from tabla_hashtags')
+        df_hashtags = top_hashtags.toPandas()
 
+        df_hashtags_fin = df_hashtags_fin.set_index('hashtag').add(df_hashtags.set_index('hashtag'), fill_value=0).reset_index()
 
+    # Introducimos un delay igual al tiempo entre ventanas para que se calcule el nuevo batch y tablas derivadas.
+    time.sleep(15)
+
+# Tablas finales.
 print(df_can)
+print(df_hashtags_fin)
 
-top_hashtags = sqlContext.sql('Select hashtag, count from tabla_hashtags')
-top_hashtags.toPandas()
+## Plots
 
-top_pop = sqlContext.sql('Select candidato, count from ' + nombre_tabla)
-tabla = top_pop.toPandas()
-tabla.iloc[np.where(tabla['candidato'] == True)[0], 1]
+
 
 
 ssc.stop()
@@ -211,69 +217,3 @@ os.system('kill $(lsof -ti tcp:9992)')
 os.system('fuser 9992/tcp')
 
 print(" ")
-
-# Creamos una tupla con nombre, para poder asignar valores a campos de una tupla y llamarlos.
-#valores = ("hashtag", "count")
-#valores = ("texto", "geo", "hashtag")
-#Tweet = collections.namedtuple('Tweet', valores)
-
-#(lines.flatMap(lambda line: (line['text'].split(" "))).filter(lambda word: word.lower().startswith("#"))
-#.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a + b).map(lambda rec: Tweet(rec[0], rec[1]))
-#.foreachRDD(lambda rdd: rdd.toDF().sort(desc("count")).limit(10).registerTempTable("tabla_tweets")))
-
-# Ahora vamos a transformar nuestro objeto DStream en un dataframe para manipularlo.
-# Spliteamos por espacios.
-#(lines
-
-# Dividimos las lineas por espacios, formando palabras.
-#.flatMap(lambda line: line.split(" "))
-
-# Filtramos por hashtag en minúsculas.
-#.filter(lambda word: word.lower().startswith("#"))
-
-# Mapeamos en forma de tupla con un 1 para contar.
-#.map(lambda word: (word, 1))
-
-# Reducimos por palabra del hashtag.
-#.reduceByKey(lambda a, b: a + b)
-
-# Transformamos en la tupla nombrada "Tweet".
-#.map(lambda rec: Tweet(rec[0], rec[1]))
-
-# Para cada batch, pasamos el conjunto de tuplas nombradas a dataframes ordenando
-# por orden descendiente de su repetición.
-#.foreachRDD(lambda rdd: rdd.toDF().sort(desc("count"))
-
-# Limitamos la salida a 15 y creamos una tabla temporal para usar comandos SQL en ella.
-#.limit(10).registerTempTable("tabla_tweets")))
-
-# Iniciamos la conexión y por tanto la gestión de tweets por parte de Spark.
-
-time.sleep(20)
-
-count = 0
-
-while count < 3:
-
-    top_hashtags = sqlContext.sql('Select hashtag, count from tabla_hashtags')
-    df = top_hashtags.toPandas()
-
-    # Para visualizar, descomponemos en x e y.
-    x = df['hashtag']
-    y = df['count']
-
-    # Creamos el barplot.
-    fig, ax = plt.subplots()
-    ax.bar([idx for idx in range(len(x))], y, color = 'blue')
-    ax.set_xticks([idx+0.5 for idx in range(len(x))])
-    ax.set_xticklabels(x, rotation=35, ha='right', size=10)
-    plt.show()
-
-    count = count + 1
-
-time.sleep(5)
-
-ssc.stop()
-
-os.system('kill $(lsof -ti tcp:9992)')
-os.system('fuser 9992/tcp')

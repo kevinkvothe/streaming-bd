@@ -100,7 +100,8 @@ if __name__ == "__main__":
     print("Received request from: " + str(addr))
     
     # Definimos el filtro:
-    candidatos = ['trump', 'Trump', 'clinton', 'Clinton', 'obama', 'Obama', 'abascal', 'Abascal', 'iglesias', 'Iglesias', 'sanchez', 'Sanchez', 'rajoy', 'Rajoy']
+    #candidatos = ['trump', 'Trump', 'clinton', 'Clinton', 'obama', 'Obama', 'abascal', 'Abascal', 'iglesias', 'Iglesias', 'sanchez', 'Sanchez', 'rajoy', 'Rajoy', 'rivera', 'Rivera']
+    candidatos = ['abascal', 'Abascal', 'iglesias', 'Iglesias', 'sanchez', 'Sanchez', 'casado', 'Casado', 'rivera', 'Rivera']
 
     # Dado que hay conexión, iniciamos la transferencia por el socket.
     sendData(c)
