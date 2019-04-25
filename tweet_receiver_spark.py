@@ -171,8 +171,10 @@ ssc.start()
 # Introducimos un delay para que se calcule el primer batch y las tablas derivadas.
 time.sleep(22)
 
+df_dict = {"candidatos": candidatos_lower, "suma_1": np.zeros(len(candidatos_lower)), "suma_2": np.zeros(len(candidatos_lower)), "suma_3": np.zeros(len(candidatos_lower)), "suma_4": np.zeros(len(candidatos_lower)), "suma_5": np.zeros(len(candidatos_lower))}
+
 # Definimos dos dataframes vacíos con los candidatos y sus menciones y otro con los hashtags y su conteo.
-df_can = pd.DataFrame({"candidatos": candidatos_lower, "suma": np.zeros(len(candidatos_lower))})
+df_can = pd.DataFrame(df_dict)
 df_hashtags_fin = pd.DataFrame({'hashtag': [], 'count': []})
 
 # Rellenamos el dataframe anterior de forma acumulativa en 5 ciclos.
@@ -192,24 +194,37 @@ for a in range(5):
         else:
             val = 0
 
-        df_can.iloc[np.where(df_can['candidatos'] == i)[0], 1] += val
+        df_can.iloc[np.where(df_can['candidatos'] == i)[0], a + 1] += val
+
+        if a > 0:
+
+            df_can.iloc[np.where(df_can['candidatos'] == i)[0], a + 1] += df_can.iloc[np.where(df_can['candidatos'] == i)[0], a]
 
         top_hashtags = sqlContext.sql('Select hashtag, count from tabla_hashtags')
         df_hashtags = top_hashtags.toPandas()
 
         df_hashtags_fin = df_hashtags_fin.set_index('hashtag').add(df_hashtags.set_index('hashtag'), fill_value=0).reset_index()
 
+    # Mostramos la comparativa de menciones en cada iteración.
+    x = df_can['candidatos']
+    y = df_can.iloc[:, 1:(a + 2)]
+
+    colores = ['red', 'blue', 'green', 'black', 'pink']
+    for o in range(a + 1):
+
+        plt.bar([idx + 0.8*o/(a + 1) for idx in range(len(x))], y.iloc[:, o], color = colores[o], width = 0.8/(a + 1), tick_label = x)
+    plt.show()
+
     # Introducimos un delay igual al tiempo entre ventanas para que se calcule el nuevo batch y tablas derivadas.
     time.sleep(15)
 
-# Tablas finales.
-print(df_can)
-print(df_hashtags_fin)
+# Plot de hashtags.
+x = df_hashtags_fin['hashtag']
+y = df_hashtags_fin.iloc[:, 1]
 
-## Plots
-
-
-
+plt.figure(figsize = (15, 10))
+plt.barh([idx for idx in range(len(x))], y, tick_label = x)
+plt.show()
 
 ssc.stop()
 
