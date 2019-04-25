@@ -11,6 +11,8 @@ import collections
 import json
 import pprint
 import unidecode
+import numpy as np
+import pandas as pd
 
 # Pyspark
 import findspark
@@ -60,7 +62,7 @@ socket_stream = ssc.socketTextStream("127.0.0.1", 9992)
 # de segundos de la ventana. Usaremos ventanas de 20 segundos cada 20 segundos, de forma
 # que todos los datos que procesemos cada 20 segundos serán independientes (no tendremos
 # batches superpuestos).
-socket_stream = socket_stream.window(10, 10)
+socket_stream = socket_stream.window(20, 20)
 
 # Definimos la clase Tweet para seleccionar lo que deseamos del Stream
 class Tweet(dict):
@@ -123,53 +125,92 @@ lines = tweets.map(lambda x: x['text'])
 valores_pop = ("candidato", "count")
 pop_tuple = collections.namedtuple('pop_tuple', valores_pop)
 
-candidatos = ['trump', 'Trump', 'clinton', 'Clinton', 'obama', 'Obama', 'abascal', 'Abascal', 'iglesias', 'Iglesias', 'sanchez', 'Sanchez', 'rajoy', 'Rajoy']
 candidatos_lower = ['trump', 'clinton', 'obama', 'abascal', 'iglesias', 'sanchez', 'rajoy']
 
-# for i in candidatos_lower:
-# i = 'trump'
+def calcular_tabla(candidato):
 
-# Ahora vamos a transformar nuestro objeto DStream en un dataframe para manipularlo. Spliteamos por espacios.
-lines = tweets.map(lambda x: x['text'])
-(lines
-# Dividimos las lineas por espacios, formando palabras.
-.flatMap(lambda line: line.replace("#", "").replace("'", "").split(" "))
+    nombre_tabla = "tabla_pop_" + candidato
 
-# Filtramos por hashtag en minúsculas.
-#.map(lambda word: (unidecode.unidecode(word).lower().startswith("trump"), 1))
-#.map(lambda word: ("trump" in unidecode.unidecode(word).lower(), 1))
-.filter(lambda word: word.lower().startswith("trump"))
+    # Ahora vamos a transformar nuestro objeto DStream en un dataframe para manipularlo. Spliteamos por espacios.
+    lines = tweets.map(lambda x: x['text'])
+    (lines
+    # Dividimos las lineas por espacios, formando palabras.
+    .flatMap(lambda line: line.replace("#", "").replace("'", "").replace(",", "").replace(".", "").split(" "))
 
-# Mapeamos en forma de tupla con un 1 para contar.
-.map(lambda word: (word, 1))
+    # Filtramos por hashtag en minúsculas.
+    #.map(lambda word: (unidecode.unidecode(word).lower().startswith("trump"), 1))
+    .map(lambda word: (candidato in unidecode.unidecode(word).lower(), 1))
+    #.filter(lambda word: word.lower().startswith("trump"))
+    #.filter(lambda word: "trump" in word.lower())
 
-# Reducimos por palabra del hashtag.
-.reduceByKey(lambda a, b: a + b)
+    # Mapeamos en forma de tupla con un 1 para contar.
+    #.map(lambda word: (word, 1))
 
-# Transformamos en la tupla nombrada "Tweet".
-.map(lambda tupla: pop_tuple(tupla[0], tupla[1]))
+    # Reducimos por palabra del hashtag.
+    .reduceByKey(lambda a, b: a + b)
 
-# Para cada batch, pasamos el conjunto de tuplas nombradas a dataframes ordenando
-# por orden descendiente de su repetición.
-.foreachRDD(lambda rdd: rdd.toDF().sort(desc("count"))
+    # Transformamos en la tupla nombrada "Tweet".
+    .map(lambda tupla: pop_tuple(tupla[0], tupla[1]))
 
-# Limitamos la salida a 15 y creamos una tabla temporal para usar comandos SQL en ella.
-.limit(2).registerTempTable("tabla_pop ")))
+    # Para cada batch, pasamos el conjunto de tuplas nombradas a dataframes ordenando
+    # por orden descendiente de su repetición.
+    .foreachRDD(lambda rdd: rdd.toDF().sort(desc("count"))
 
+    # Limitamos la salida a 15 y creamos una tabla temporal para usar comandos SQL en ella.
+    .limit(2).registerTempTable(nombre_tabla)))
+
+for cand in candidatos_lower:
+    calcular_tabla(cand)
+
+#calcular_tabla('trump')
+#calcular_tabla('sanchez')
+#calcular_tabla('clinton')
 
 ssc.start()
+
+
+# Añadimos los valores de True al dataframe creado anteriormente.
+top_pop = sqlContext.sql('Select candidato, count from tabla_pop_trump')
+tabla_2 = top_pop.toPandas()
+print(tabla_2)
+
+
+df_can = pd.DataFrame({"candidatos": candidatos_lower, "suma": np.zeros(7)})
+
+for i in candidatos_lower:
+
+    nombre_tabla = "tabla_pop_" + i
+
+    # Añadimos los valores de True al dataframe creado anteriormente.
+    top_pop = sqlContext.sql('Select candidato, count from ' + nombre_tabla)
+    tabla = top_pop.toPandas()
+
+    if tabla.shape[0] > 1:
+        val = tabla.iloc[np.where(tabla['candidato'] == True)[0], 1]
+        val = val[1]
+    else:
+        val = 0
+
+    df_can.iloc[np.where(df_can['candidatos'] == i)[0], 1] += val
+    print(df_can)
+
+
+print(df_can)
 
 top_hashtags = sqlContext.sql('Select hashtag, count from tabla_hashtags')
 top_hashtags.toPandas()
 
-top_pop= sqlContext.sql('Select candidato, count from tabla_pop')
-top_pop.toPandas()
+top_pop = sqlContext.sql('Select candidato, count from ' + nombre_tabla)
+tabla = top_pop.toPandas()
+tabla.iloc[np.where(tabla['candidato'] == True)[0], 1]
+
 
 ssc.stop()
 
 os.system('kill $(lsof -ti tcp:9992)')
 os.system('fuser 9992/tcp')
 
+print(" ")
 
 # Creamos una tupla con nombre, para poder asignar valores a campos de una tupla y llamarlos.
 #valores = ("hashtag", "count")
