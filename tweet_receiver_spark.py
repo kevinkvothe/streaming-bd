@@ -188,18 +188,23 @@ for a in range(5):
         top_pop = sqlContext.sql('Select candidato, count from ' + nombre_tabla)
         tabla = top_pop.toPandas()
 
+        # Nos aseguramos de que exista un valor para añadir, en caso contrario añadimos 0.
         if tabla.shape[0] > 1:
             val = tabla.iloc[np.where(tabla['candidato'] == True)[0], 1]
             val = val[1]
         else:
             val = 0
 
+        # Sumamos a los 0s los valores obtenidos.
         df_can.iloc[np.where(df_can['candidatos'] == i)[0], a + 1] += val
 
+        # Necesitamos sumar las nuevas menciones para mostrar el aumento.
         if a > 0:
 
             df_can.iloc[np.where(df_can['candidatos'] == i)[0], a + 1] += df_can.iloc[np.where(df_can['candidatos'] == i)[0], a]
 
+        # Hacemos algo similar con los hashtags, hacemos un merge conservando todos los hashtags diferentes
+        # y sumando los ya utilizados.
         top_hashtags = sqlContext.sql('Select hashtag, count from tabla_hashtags')
         df_hashtags = top_hashtags.toPandas()
 
@@ -218,16 +223,40 @@ for a in range(5):
     # Introducimos un delay igual al tiempo entre ventanas para que se calcule el nuevo batch y tablas derivadas.
     time.sleep(15)
 
-# Plot de hashtags.
+# Plots finales:
+
+# de menciones:
+x = df_can['candidatos']
+y = df_can.iloc[:, 1:(a + 2)]
+
+colores = ['red', 'blue', 'green', 'black', 'pink']
+for o in range(a + 1):
+
+    plt.bar([idx + 0.8*o/(a + 1) for idx in range(len(x))], y.iloc[:, o], color = colores[o], width = 0.8/(a + 1), tick_label = x)
+plt.title("Número de menciones acumuladas cada 15 segundos por candidato.")
+plt.savefig('menciones.png')
+plt.show()
+
+# de hashtags.
 x = df_hashtags_fin['hashtag']
 y = df_hashtags_fin.iloc[:, 1]
 
 plt.figure(figsize = (15, 10))
 plt.barh([idx for idx in range(len(x))], y, tick_label = x)
+plt.title("Hashtags más utilizados en tweets mencionando a alguno de los 5 candidatos a presidente del gobierno.")
+plt.savefig('hashtags.png')
 plt.show()
 
+print(df_can)
+
+print("\n")
+
+print(df_hashtags_fin)
+
+# Detenemos el streaming.
 ssc.stop()
 
+# Limpiamos el puerto utilizado para poder usarlo inmediatamente después.
 os.system('kill $(lsof -ti tcp:9992)')
 os.system('fuser 9992/tcp')
 

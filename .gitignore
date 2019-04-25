@@ -4,3 +4,4 @@ secret.py
 /__pycache__/
 Text File
 /tweets/
+.ipynb_checkpoints/
