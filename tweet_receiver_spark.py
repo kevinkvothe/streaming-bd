@@ -10,6 +10,7 @@ import seaborn as sns
 import collections
 import json
 import pprint
+import unidecode
 
 # Pyspark
 import findspark
@@ -59,7 +60,7 @@ socket_stream = ssc.socketTextStream("127.0.0.1", 9992)
 # de segundos de la ventana. Usaremos ventanas de 20 segundos cada 20 segundos, de forma
 # que todos los datos que procesemos cada 20 segundos serán independientes (no tendremos
 # batches superpuestos).
-# socket_stream = socket_stream.window(20, 20)
+socket_stream = socket_stream.window(10, 10)
 
 # Definimos la clase Tweet para seleccionar lo que deseamos del Stream
 class Tweet(dict):
@@ -68,31 +69,36 @@ class Tweet(dict):
 
         self['followers'] = tweet_in['user']['followers_count']
         self['text'] = tweet_in['text']
-        self['hashtags'] = [x['text'] for x in tweet_in['entities']['hashtags']] if tweet_in['entities']['hashtags'] else "None"
+        self['hashtags'] = [x['text'] for x in tweet_in['entities']['hashtags']] if tweet_in['entities']['hashtags'] else None
+        self['has_hashtag'] = True if tweet_in['entities']['hashtags'] else False
 
-# valores = ("text", "hashtag", "followers")
-# Tweet_tuple = collections.namedtuple('Tweet_tuple', valores)
+#valores = ("text", "hashtag", "followers")
+#Tweet_tuple = collections.namedtuple('Tweet_tuple', valores)
 
 lines = socket_stream.map(lambda x: json.loads(x))
 tweets = lines.map(lambda x: Tweet(x))
-# tweets.map(lambda x: x['hashtags']).pprint()
+#tweets.map(lambda x: x['has_hashtag']).pprint()
 
 #tweets_clean = tweets.map(lambda x: Tweet_tuple(x['text'], x['hashtags'], x['followers']))
 #tweets_clean.pprint()
 
 # ================ Ahora buscamos obtener estadísticas: =================== #
 
+# ====================== Primer análisis: Hashtags =========================#
 ## En primer lugar, una estadística de hashtags que utilice la gente que escriba determinadas palabras clave.
 # Definimos una tupla nombrada para delimitar los hashtags y su repetición.
 valores_hash = ("hashtag", "count")
 hash_tuple = collections.namedtuple('hash_tuple', valores_hash)
 
-# Filtramos los tweets que contienen hashtags.
-tweets_hashtags = tweets.filter(lambda x: ("None" in x['hashtag'])).map(lambda x: x['hashtag'])
-tweets_hashtags.pprint()
+# Ahora vamos a transformar nuestro objeto DStream en un dataframe para manipularlo. Spliteamos por espacios.
+lines = tweets.map(lambda x: x['text'])
 
-# Seleccionamos los hashtags
-(tweets_hashtags.map(lambda x: x['hashtag'])
+(lines
+# Dividimos las lineas por espacios, formando palabras.
+.flatMap(lambda line: line.split(" "))
+
+# Filtramos por hashtag en minúsculas.
+.filter(lambda word: word.lower().startswith("#"))
 
 # Mapeamos en forma de tupla con un 1 para contar.
 .map(lambda word: (word, 1))
@@ -100,8 +106,8 @@ tweets_hashtags.pprint()
 # Reducimos por palabra del hashtag.
 .reduceByKey(lambda a, b: a + b)
 
-# Transformamos en la tupla nombrada "hash_tuple".
-.map(lambda x: hash_tuple(x[0], x[1]))
+# Transformamos en la tupla nombrada "Tweet".
+.map(lambda rec: hash_tuple(rec[0], rec[1]))
 
 # Para cada batch, pasamos el conjunto de tuplas nombradas a dataframes ordenando
 # por orden descendiente de su repetición.
@@ -109,41 +115,60 @@ tweets_hashtags.pprint()
 
 # Limitamos la salida a 15 y creamos una tabla temporal para usar comandos SQL en ella.
 .limit(10).registerTempTable("tabla_hashtags")))
-#
-ssc.start()
 
-## En primer lugar, una estadística de hashtags que utilice la gente que escriba determinadas palabras
-## clave.
-#valores_hash = ("hashtag", "count")
-#hash_tuple = collections.namedtuple('hash_tuple', valores_hash)
+
+# =================== Segundo análisis: popularidad ===================== #
+
+# Definimos una tupla nombrada para delimitar los hashtags y su repetición.
+valores_pop = ("candidato", "count")
+pop_tuple = collections.namedtuple('pop_tuple', valores_pop)
+
+candidatos = ['trump', 'Trump', 'clinton', 'Clinton', 'obama', 'Obama', 'abascal', 'Abascal', 'iglesias', 'Iglesias', 'sanchez', 'Sanchez', 'rajoy', 'Rajoy']
+candidatos_lower = ['trump', 'clinton', 'obama', 'abascal', 'iglesias', 'sanchez', 'rajoy']
+
+# for i in candidatos_lower:
+# i = 'trump'
 
 # Ahora vamos a transformar nuestro objeto DStream en un dataframe para manipularlo. Spliteamos por espacios.
-#(tweets
-
+lines = tweets.map(lambda x: x['text'])
+(lines
 # Dividimos las lineas por espacios, formando palabras.
-#.flatMap(lambda line: line['text'].split(" "))
+.flatMap(lambda line: line.replace("#", "").replace("'", "").split(" "))
 
 # Filtramos por hashtag en minúsculas.
-#.filter(lambda word: word.lower().startswith("#"))
+#.map(lambda word: (unidecode.unidecode(word).lower().startswith("trump"), 1))
+#.map(lambda word: ("trump" in unidecode.unidecode(word).lower(), 1))
+.filter(lambda word: word.lower().startswith("trump"))
 
 # Mapeamos en forma de tupla con un 1 para contar.
-#.map(lambda word: (word, 1))
+.map(lambda word: (word, 1))
 
 # Reducimos por palabra del hashtag.
-#.reduceByKey(lambda a, b: a + b)
+.reduceByKey(lambda a, b: a + b)
 
 # Transformamos en la tupla nombrada "Tweet".
-#.map(lambda rec: hash_tuple(rec[0], rec[1]))
+.map(lambda tupla: pop_tuple(tupla[0], tupla[1]))
 
 # Para cada batch, pasamos el conjunto de tuplas nombradas a dataframes ordenando
 # por orden descendiente de su repetición.
-#.foreachRDD(lambda rdd: rdd.toDF().sort(desc("count"))
+.foreachRDD(lambda rdd: rdd.toDF().sort(desc("count"))
 
 # Limitamos la salida a 15 y creamos una tabla temporal para usar comandos SQL en ella.
-#.limit(10).registerTempTable("tabla_hashtags")))
-#
+.limit(2).registerTempTable("tabla_pop ")))
+
 
 ssc.start()
+
+top_hashtags = sqlContext.sql('Select hashtag, count from tabla_hashtags')
+top_hashtags.toPandas()
+
+top_pop= sqlContext.sql('Select candidato, count from tabla_pop')
+top_pop.toPandas()
+
+ssc.stop()
+
+os.system('kill $(lsof -ti tcp:9992)')
+os.system('fuser 9992/tcp')
 
 
 # Creamos una tupla con nombre, para poder asignar valores a campos de una tupla y llamarlos.
@@ -182,6 +207,7 @@ ssc.start()
 #.limit(10).registerTempTable("tabla_tweets")))
 
 # Iniciamos la conexión y por tanto la gestión de tweets por parte de Spark.
+
 time.sleep(20)
 
 count = 0

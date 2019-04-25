@@ -10,21 +10,11 @@ from tweepy.streaming import StreamListener
 ## Librerías generales
 import json
 import socket
-
+import unidecode
 
 # Claves de acceso a la API de Twitter. Yo lo he hecho de forma que estén en un archivo "secret.py" aparte.
 import secret
 from secret import consumer_key, consumer_secret, access_token, access_token_secret
-
-class Tweet(dict):
-
-    def __init__(self, tweet_in):
-
-        # super(Tweet, self).__init__(self)
-        self['text'] = tweet_in['text']
-        self['hashtags'] = [x['text'] for x in tweet_in['entities']['hashtags']]
-        self['geo'] = tweet_in['geo']['coordinates'] if tweet_in['geo'] else "None"
-
 
 # Creamos una clase para usarla posteriormente. Se basa en el uso de un objeto
 # StreamListener de tweepy.
@@ -48,7 +38,10 @@ class TweetsListener(StreamListener):
         try:
 
             msg = json.loads(data)
-            print(msg['entities']['hashtags'])
+            
+            analize = unidecode.unidecode(msg['text']).replace("#", "")
+            print(any(x in analize.split(" ") for x in candidatos))
+            #print(msg['text'])
 
             self.client_socket.send(data.encode())
 
@@ -84,7 +77,7 @@ def sendData(c_socket):
     twitter_stream = tweepy.Stream(auth, TweetsListener(c_socket))
 
     # Filtramos los tweets por una palabra clave.
-    twitter_stream.filter(track=['a'])
+    twitter_stream.filter(track=candidatos)
 
 # Volvemos al script, esta parte se ejecuta independientemente de la clase. Es lo que inicia
 # el socket y espera conexión para continuar con la transmisión.
@@ -105,6 +98,9 @@ if __name__ == "__main__":
     c, addr = s.accept()
 
     print("Received request from: " + str(addr))
+    
+    # Definimos el filtro:
+    candidatos = ['trump', 'Trump', 'clinton', 'Clinton', 'obama', 'Obama', 'abascal', 'Abascal', 'iglesias', 'Iglesias', 'sanchez', 'Sanchez', 'rajoy', 'Rajoy']
 
     # Dado que hay conexión, iniciamos la transferencia por el socket.
     sendData(c)
